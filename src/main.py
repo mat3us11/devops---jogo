@@ -35,7 +35,7 @@ ASSETS_DIR = BASE_DIR / "assets"
 player_img = pygame.image.load(resource_path("assets/personagem.png")).convert_alpha()
 
 # Define tamanho do personagem
-PLAYER_SIZE = 48
+PLAYER_SIZE = 108
 
 # Redimensiona o sprite
 player_img = pygame.transform.scale(player_img, (PLAYER_SIZE, PLAYER_SIZE))
@@ -96,7 +96,7 @@ while True:
     player_y = max(0, min(HEIGHT - PLAYER_SIZE, player_y))
 
     # Retângulo do jogador (para colisão)
-    player_rect = pygame.Rect(player_x, player_y, PLAYER_SIZE, PLAYER_SIZE)
+    player_rect = pygame.Rect(player_x + 35, player_y + 35, PLAYER_SIZE - 70, PLAYER_SIZE - 70)
 
     # Retângulo da moeda
     coin_rect = pygame.Rect(
