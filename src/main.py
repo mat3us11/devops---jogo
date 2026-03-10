@@ -59,6 +59,30 @@ spr_crop2 = load_sprite("assets/planta.png", TILE)
 spr_crop3 = load_sprite("assets/planta.png", TILE)
 
 # ==============================
+# TIPOS DE PLANTA
+# ==============================
+
+PLANT_TYPES = {
+    "trigo": {
+        "growth": 200,
+        "reward": 5
+    },
+    "milho": {
+        "growth": 260,
+        "reward": 8
+    },
+    "tomate": {
+        "growth": 320,
+        "reward": 12
+    }
+}
+
+PLANT_LIST = ["trigo", "milho", "tomate"]
+
+# planta selecionada
+current_seed = "trigo"
+
+# ==============================
 # TILES / MAPA
 # ==============================
 # 0 = grama (anda)
@@ -109,7 +133,7 @@ crop_state = {}
 crop_timer = {}
 
 # ticks para crescer (quanto menor, mais rápido)
-growth_ticks = 180  # base
+growth_ticks = 200  # base
 # recompensa por colher
 harvest_reward = 5
 
@@ -194,8 +218,15 @@ def draw_tile(tile, x, y):
             pygame.draw.rect(screen, (150, 110, 80), (x, y, TILE, TILE))
 
 def draw_crop(r, c):
-    stage = crop_state.get((r, c), 0)
+
+    plant = crop_state.get((r, c))
+    if not plant:
+        return
+
+    stage = plant["stage"]
+
     x, y = c * TILE, r * TILE
+
     img = None
     if stage == 1:
         img = spr_crop1
@@ -206,9 +237,8 @@ def draw_crop(r, c):
 
     if img:
         screen.blit(img, (x, y))
-    elif stage > 0:
-        # fallback: bolinha verde
-        pygame.draw.circle(screen, (40, 160, 60), (x + TILE//2, y + TILE//2), 6 + stage*3)
+    else:
+        pygame.draw.circle(screen, (40,160,60), (x+TILE//2, y+TILE//2), 6+stage*3)
 
 def draw_player():
     x, y = player_c * TILE, player_r * TILE
@@ -218,10 +248,46 @@ def draw_player():
         pygame.draw.rect(screen, DARK, (x, y, TILE, TILE))
 
 def draw_ui():
-    ui = f"Moedas: {coins}   Sementes: {seeds}   Crescimento: {growth_ticks} ticks   Colheita: +{harvest_reward}"
+    ui = f"Moedas:{coins}  Sementes:{seeds}  Planta:{current_seed}"
     txt = font.render(ui, True, WHITE)
     pygame.draw.rect(screen, DARK, (0, 0, WIDTH, 28))
     screen.blit(txt, (10, 6))
+
+def draw_seed_hud():
+
+    size = 32
+    spacing = 10
+
+    total_width = len(PLANT_LIST) * (size + spacing)
+
+    start_x = WIDTH - total_width - 20
+    y = 0
+
+    # fundo da HUD
+    bg_rect = pygame.Rect(start_x-10, 0, total_width+20, 32)
+    pygame.draw.rect(screen, (40,40,40), bg_rect)
+
+    for i, plant in enumerate(PLANT_LIST):
+
+        x = start_x + i * (size + spacing)
+
+        rect = pygame.Rect(x, y, size, size)
+
+        # destaque da planta selecionada
+        if plant == current_seed:
+            pygame.draw.rect(screen, (255,210,60), rect)
+        else:
+            pygame.draw.rect(screen, (80,80,80), rect)
+
+        # ícone
+        if spr_crop1:
+            img = pygame.transform.scale(spr_crop1, (22,22))
+            screen.blit(img, (x+5, y+5))
+
+        # número
+        num = font.render(str(i+1), True, WHITE)
+        num_rect = num.get_rect(center=(x + size//2, y + size//2))
+        screen.blit(num, num_rect)
 
 def draw_shop():
     # overlay simples
@@ -261,8 +327,19 @@ while running:
             running = False
 
         if event.type == pygame.KEYDOWN:
+
             if event.key == pygame.K_ESCAPE:
                 running = False
+
+             # selecionar planta
+            if event.key == pygame.K_1:
+                current_seed = "trigo"
+
+            if event.key == pygame.K_2:
+                current_seed = "milho"
+
+            if event.key == pygame.K_3:
+                current_seed = "tomate"
 
             # abrir/fechar loja
             if event.key == pygame.K_b:
@@ -286,6 +363,14 @@ while running:
                 nr -= 1
             elif event.key == pygame.K_DOWN:
                 nr += 1
+            elif event.key == pygame.K_a:
+                nc -= 1
+            elif event.key == pygame.K_d:
+                nc += 1
+            elif event.key == pygame.K_w:
+                nr -= 1
+            elif event.key == pygame.K_s:
+                nr += 1
 
             if (nr, nc) != (player_r, player_c):
                 if not is_blocked(nr, nc):
@@ -299,15 +384,24 @@ while running:
                 if tile == T_SOIL and (player_r, player_c) not in crop_state:
                     if seeds > 0:
                         seeds -= 1
-                        crop_state[(player_r, player_c)] = 1
-                        crop_timer[(player_r, player_c)] = growth_ticks
+                        crop_state[(player_r, player_c)] = {
+                        "type": current_seed,
+                        "stage": 1
+                    }
+                        
+                    crop_timer[(player_r, player_c)] = PLANT_TYPES[current_seed]["growth"]
+
                     # se não tiver seed, não faz nada
 
                 # colher se planta madura
-                if crop_state.get((player_r, player_c)) == 3:
+                plant = crop_state.get((player_r, player_c))
+
+                if plant and plant["stage"] == 3:
+
+                    coins += PLANT_TYPES[plant["type"]]["reward"]
+
                     crop_state.pop((player_r, player_c), None)
                     crop_timer.pop((player_r, player_c), None)
-                    coins += harvest_reward
 
     # crescimento das plantas (tick-based)
     # a cada frame, decrementa timers e sobe estágio
@@ -319,10 +413,12 @@ while running:
             to_upgrade.append(pos)
 
     for pos in to_upgrade:
-        stage = crop_state.get(pos, 0)
-        if stage in (1, 2):
-            crop_state[pos] = stage + 1
-            crop_timer[pos] = growth_ticks
+        plant = crop_state.get(pos)
+
+        stage = plant["stage"]
+        if stage in (1,2):
+            plant["stage"] += 1
+            crop_timer[pos] = PLANT_TYPES[plant["type"]]["growth"]
         else:
             # madura fica madura (sem timer)
             crop_timer.pop(pos, None)
@@ -359,6 +455,7 @@ while running:
 
     # ui
     draw_ui()
+    draw_seed_hud()
 
     # hint tile
     tile_here = world[player_r][player_c]
