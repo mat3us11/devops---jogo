@@ -112,9 +112,6 @@ devops---jogo/
 
 ## 🚀 Como Executar
 
-### Pré-requisitos
-- Python 12.0 ou
-- pip
 
 ### Instalação
 
