@@ -1,0 +1,147 @@
+{
+  "version": 2,
+  "player": {
+    "x": 670.5999999999977,
+    "y": 335.39999999999816,
+    "coins": 136,
+    "xp": 92,
+    "level": 2,
+    "growth_boost": 0,
+    "seed_inventory": {
+      "trigo": 0,
+      "milho": 0,
+      "tomate": 0,
+      "batata": 0,
+      "cenoura": 0,
+      "morango": 0,
+      "abóbora": 0,
+      "uva": 0
+    }
+  },
+  "world": {
+    "cols": 60,
+    "rows": 40,
+    "crop_state": {
+      "7,8": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "7,11": {
+        "type": "trigo",
+        "stage": 3
+      },
+      "8,8": {
+        "type": "trigo",
+        "stage": 3
+      },
+      "8,6": {
+        "type": "trigo",
+        "stage": 3
+      },
+      "8,5": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "8,4": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "9,4": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "9,5": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "8,13": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "7,13": {
+        "type": "trigo",
+        "stage": 3
+      },
+      "7,14": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "7,15": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "7,12": {
+        "type": "trigo",
+        "stage": 3
+      },
+      "8,14": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "9,16": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "8,16": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "7,16": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "8,15": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "8,17": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "33,6": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "34,7": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "34,8": {
+        "type": "trigo",
+        "stage": 2
+      },
+      "8,9": {
+        "type": "trigo",
+        "stage": 2
+      }
+    },
+    "crop_timer": {
+      "7,8": 61,
+      "8,5": 37,
+      "8,4": 45,
+      "9,4": 61,
+      "9,5": 61,
+      "8,13": 52,
+      "7,14": 660,
+      "7,15": 660,
+      "8,14": 660,
+      "9,16": 660,
+      "8,16": 660,
+      "7,16": 660,
+      "8,15": 660,
+      "8,17": 660,
+      "33,6": 660,
+      "34,7": 660,
+      "34,8": 660,
+      "8,9": 319
+    },
+    "soil_wetness": {}
+  },
+  "time": {
+    "day": 3,
+    "hour": 17,
+    "minute": 19,
+    "season_idx": 0,
+    "weather": "Nublado"
+  }
+}
